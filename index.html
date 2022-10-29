@@ -16,12 +16,8 @@
         <div class="col-md-6 offset-md-3">
             <form id="tg">
                 <div class="form-group">
-                    <label class="form-label">Имя</label>
-                    <input type="text" class="form-control" name="name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email">
+                    <label for="formFile" class="form-label">Выберите файл</label>
+                    <input type="file" name="document" id="formFile">
                 </div>
 
                   <div id="success" class="alert alert-success mt-3" role="alert" style="display: none;"></div>
@@ -39,25 +35,23 @@
     <script>
         const TOKEN = "5730419574:AAG2fjuQJMpgAvDP69QCYjXDeMgaNe5yC8Y";
         const CHAT_ID = "-1001777970426";
-        const URL_API = `https://api.telegram.org/bot${ TOKEN }/sendMessage`;
+        const URL_API = `https://api.telegram.org/bot${ TOKEN }/sendDocument`;
         const success = document.getElementById('success')
 
         
         document.getElementById('tg').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            let message = `<b>Заявка с сайта!</b>\n`;
-            message += `<b>Отправитель: </b> ${ this.name.value }\n`;
-            message += `<b>Почта: </b> ${ this.email.value }`;
-            
-            axios.post(URL_API, {
-                chat_id: CHAT_ID,
-                parse_mode: 'html',
-                text: message
+            const formData = new FormData();
+            formData.append('chat_id',CHAT_ID);
+            formData.append('document', this.document.files[0]);
+
+            axios.post(URL_API,formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
             .then((res) => {
-                this.name.value = "";
-                this.email.value = "";
                 success.innerHTML = "Cообщение отправлено!"
                 success.style.display = "block";
             })
