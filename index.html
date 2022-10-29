@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TG Message</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container mt-5 pt-5 pb-5">
+        <div class="col-md-6 offset-md-3">
+            <form id="tg">
+                <div class="form-group">
+                    <label class="form-label">Имя</label>
+                    <input type="text" class="form-control" name="name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email">
+                </div>
+
+                  <div id="success" class="alert alert-success mt-3" role="alert" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary mt-4">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script>
+        const TOKEN = "5730419574:AAG2fjuQJMpgAvDP69QCYjXDeMgaNe5yC8Y";
+        const CHAT_ID = "-1001777970426";
+        const URL_API = `https://api.telegram.org/bot${ TOKEN }/sendMessage`;
+        const success = document.getElementById('success')
+
+        
+        document.getElementById('tg').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let message = `<b>Заявка с сайта!</b>\n`;
+            message += `<b>Отправитель: </b> ${ this.name.value }\n`;
+            message += `<b>Почта: </b> ${ this.email.value }`;
+            
+            axios.post(URL_API, {
+                chat_id: CHAT_ID,
+                parse_mode: 'html',
+                text: message
+            })
+            .then((res) => {
+                this.name.value = "";
+                this.email.value = "";
+                success.innerHTML = "Cообщение отправлено!"
+                success.style.display = "block";
+            })
+            .catch((err) => {
+                console.warn('Ошибка');
+            })
+            .finally(() => {
+                console.log('Конец');
+            })
+        })
+    </script>
+</body>
+
+</html>
